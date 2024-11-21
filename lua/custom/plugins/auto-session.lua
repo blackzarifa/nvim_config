@@ -10,13 +10,13 @@ return {
 
       -- Customize session name
       auto_session_root_dir = vim.fn.stdpath 'data' .. '/sessions/',
+
       auto_session_enabled = true,
       auto_session_create_enabled = true,
-
-      -- Advanced options
       auto_restore_enabled = true,
       auto_save_enabled = true,
       auto_session_allow_dirs = {},
+      bypass_session_save_file_types = { 'help' },
 
       pre_save_cmds = {},
 
