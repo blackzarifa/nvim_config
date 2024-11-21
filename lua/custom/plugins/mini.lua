@@ -21,7 +21,7 @@ return {
       -- [[ Mini Surround ]]
       -- Adds, deletes, and replaces surroundings (brackets, quotes, etc.)
       -- See `:help mini.surround`
-      require('mini.surround').setup {
+      --[[ require('mini.surround').setup  {
         mappings = {
           add = '<leader>sa', -- Add surrounding
           delete = '<leader>sd', -- Delete surrounding
@@ -34,7 +34,7 @@ return {
           suffix_last = '', -- Disable last
           suffix_next = '', -- Disable next
         },
-      }
+      } ]]
 
       -- [[ Additional Mini Modules ]]
       -- Mini.nvim comes with many other modules you can enable:
