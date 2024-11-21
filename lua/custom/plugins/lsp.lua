@@ -211,6 +211,27 @@ return {
     },
     opts = {
       notify_on_error = false,
+      formatters = {
+        prettier = {
+          prepend_args = {
+            '--tab-width',
+            '2',
+            '--print-width',
+            '100',
+            '--single-quote',
+            '--trailing-comma',
+            'es5',
+          },
+        },
+        stylua = {
+          prepend_args = {
+            '--indent-type',
+            'Spaces',
+            '--indent-width',
+            '2',
+          },
+        },
+      },
       format_on_save = function(bufnr)
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style
