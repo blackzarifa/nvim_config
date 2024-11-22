@@ -17,16 +17,16 @@ return {
     end, { desc = 'Toggle Harpoon quick menu' })
 
     -- Navigation configuration
-    vim.keymap.set('n', '<C-1>', function()
+    vim.keymap.set('n', '<M-1>', function()
       harpoon:list():select(1)
     end, { desc = 'Navigate to Harpoon file 1' })
-    vim.keymap.set('n', '<C-2>', function()
+    vim.keymap.set('n', '<M-2>', function()
       harpoon:list():select(2)
     end, { desc = 'Navigate to Harpoon file 2' })
-    vim.keymap.set('n', '<C-3>', function()
+    vim.keymap.set('n', '<M-3>', function()
       harpoon:list():select(3)
     end, { desc = 'Navigate to Harpoon file 3' })
-    vim.keymap.set('n', '<C-4>', function()
+    vim.keymap.set('n', '<M-4>', function()
       harpoon:list():select(4)
     end, { desc = 'Navigate to Harpoon file 4' })
 
