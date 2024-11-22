@@ -320,15 +320,12 @@ require('lazy').setup({
           initial_mode = 'normal',
         },
         pickers = {
-          --[[ buffers = {
-            initial_mode = 'normal',
+          find_files = {
+            initial_mode = 'insert', -- Override for find_files
           },
-          oldfiles = {
-            initial_mode = 'normal',
+          live_grep = {
+            initial_mode = 'insert', -- Override for live_grep
           },
-          git_files = {
-            initial_mode = 'normal',
-          }, ]]
         },
         extensions = {
           ['ui-select'] = {
