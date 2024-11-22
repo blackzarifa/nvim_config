@@ -37,6 +37,11 @@ return {
         'yaml',
       },
 
+      -- zc to close folds
+      -- zo to open folds
+      -- za to toggle folds
+      -- zR to open all
+      -- zM to close all
       fold = {
         enable = true, -- Enable treesitter folding
         custom_foldtext = true, -- Use better fold text
