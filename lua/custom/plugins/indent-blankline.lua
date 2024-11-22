@@ -4,7 +4,7 @@ return {
   opts = {
     indent = {
       char = '│', -- Classic indent line
-      tab_char = '▸', -- More visible tab character (or try: '⟩', '▹', '⍈', '⊳')
+      tab_char = '│', -- More visible tab character (or try: '⟩', '▹', '⍈', '⊳')
       highlight = 'IblIndent',
     },
     scope = {
