@@ -37,6 +37,11 @@ return {
         'yaml',
       },
 
+      fold = {
+        enable = true, -- Enable treesitter folding
+        custom_foldtext = true, -- Use better fold text
+      },
+
       -- Required fields for types
       modules = {},
       sync_install = false, -- Install parsers synchronously (only applied to `ensure_installed`)
