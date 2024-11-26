@@ -1,345 +1,112 @@
 return {
-  {
-    -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
-    -- used for completion, annotations and signatures of Neovim apis
-    'folke/lazydev.nvim',
-    ft = 'lua',
-    opts = {
-      library = {
-        -- Load luvit types when the `vim.uv` word is found
-        { path = 'luvit-meta/library', words = { 'vim%.uv' } },
-      },
-    },
-  },
-
-  { 'williamboman/mason.nvim', config = true },
-
-  {
-    'williamboman/mason-lspconfig.nvim',
-    dependencies = {
-      'williamboman/mason.nvim',
-      'neovim/nvim-lspconfig',
-    },
-    config = function()
-      local servers = {
-        lua_ls = {
-          settings = {
-            Lua = {
-              completion = {
-                callSnippet = 'Replace',
-              },
-            },
-          },
-        },
-        -- TypeScript config with inlay hints
-        ts_ls = {
-          settings = {
-            typescript = {
-              inlayHints = {
-                includeInlayParameterNameHints = 'all',
-                includeInlayEnumMemberValueHints = true,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-              },
-            },
-          },
-        },
-        volar = {
-          filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json' },
-        },
-        svelte = {},
-        tailwindcss = {},
-        cssls = {},
-        html = {},
-        jsonls = {},
-        emmet_ls = {},
-      }
-
-      require('mason-lspconfig').setup {
-        ensure_installed = vim.tbl_keys(servers),
-        automatic_installation = true,
-        handlers = {
-          function(server_name)
-            local capabilities = vim.lsp.protocol.make_client_capabilities()
-            capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
-
-            local server = servers[server_name] or {}
-            -- Merge default capabilities with server-specific settings
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
-      }
-    end,
-  },
-
-  -- Plugin for showing LSP progress
-  { 'j-hui/fidget.nvim', opts = {} },
-
+  -- LSP Configuration & Plugins
   {
     'neovim/nvim-lspconfig',
+    dependencies = {
+      -- Automatically install LSPs and related tools to stdpath for neovim
+      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
+      'WhoIsSethDaniel/mason-tool-installer.nvim',
+
+      -- Useful status updates for LSP
+      { 'j-hui/fidget.nvim', opts = {} },
+    },
     config = function()
-      -- Change diagnostic symbols in the sign column (gutter)
-      if vim.g.have_nerd_font then
-        local signs = { Error = '', Warn = '', Hint = '', Info = '' }
-        for type, icon in pairs(signs) do
-          local hl = 'DiagnosticSign' .. type
-          vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+      -- Brief Aside: **What is LSP?**
+      -- LSP is an acronym you'll see everywhere in Neovim plugins and config.
+      -- LSP stands for Language Server Protocol. It's a protocol that helps editors
+      -- and IDEs communicate with servers that provide language intelligence like:
+      -- - Go to definition
+      -- - Find references
+      -- - Autocompletion
+      -- - Symbol search
+      -- - Diagnostics
+
+      -- These features historically had to be implemented separately for every editor
+      -- and every language, which was a ton of work. LSP creates a standardized way
+      -- for this communication to happen, so editor plugins can be written once and
+      -- language services can be written once and work with many editors.
+
+      local on_attach = function(client, bufnr)
+        -- Keybinds for available LSP actions
+        local map = function(keys, func, desc)
+          vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
         end
+
+        -- Jump to the definition of the word under your cursor.
+        --  This is where a variable was first declared, or where a function is defined.
+        map('gd', require('telescope.builtin').lsp_definitions, 'Goto Definition')
+
+        -- Find references for the word under your cursor.
+        map('gr', require('telescope.builtin').lsp_references, 'Goto References')
+
+        -- Jump to the implementation of the word under your cursor.
+        --  Useful when your language has ways of declaring types without an actual implementation.
+        map('gI', require('telescope.builtin').lsp_implementations, 'Goto Implementation')
+
+        -- Jump to the type definition of the word under your cursor.
+        --  Useful when you're on a variable and want to see what type it is.
+        map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type Definition')
+
+        -- Opens a popup that displays documentation about the word under your cursor
+        --  Useful when you want to see what a function does without jumping to its definition.
+        map('K', vim.lsp.buf.hover, 'Hover Documentation')
+
+        -- Execute a code action, usually your cursor needs to be on top of an error
+        -- or warning for this to do anything.
+        map('<leader>ca', vim.lsp.buf.code_action, 'Code Action')
+
+        -- Rename the variable under your cursor
+        --  Useful for refactoring code.
+        map('<leader>rn', vim.lsp.buf.rename, 'Rename')
+
+        -- Show diagnostics in a floating window
+        map('<leader>d', vim.diagnostic.open_float, 'Show Diagnostics')
+
+        -- Move to the previous diagnostic in your current buffer
+        map('[d', vim.diagnostic.goto_prev, 'Previous Diagnostic')
+
+        -- Move to the next diagnostic in your current buffer
+        map(']d', vim.diagnostic.goto_next, 'Next Diagnostic')
+
+        -- Format buffer using LSP
+        map('<leader>f', function()
+          vim.lsp.buf.format { async = true }
+        end, 'Format')
       end
 
-      -- Setup keybindings when an LSP attaches to a buffer
-      vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
-        callback = function(event)
-          local map = function(keys, func, desc, modes)
-            modes = modes or 'n'
-            -- Handle both string and table modes
-            if type(modes) == 'string' then
-              vim.keymap.set(modes, keys, func, { buffer = event.buf, desc = desc })
-            else
-              -- Handle multiple modes
-              for _, mode in ipairs(modes) do
-                vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = desc })
-              end
-            end
-          end
+      -- Configure LSP servers
+      local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-          local wk = require 'which-key'
-          wk.add {
-            -- Groups
-            { '<leader>c', group = 'Code' },
-            { '<leader>d', group = 'Document' },
-            { '<leader>w', group = 'Workspace' },
-            { '<leader>r', group = 'Rename' },
-
-            -- Leader mappings
-            { '<leader>ca', desc = 'Code Action' },
-            { '<leader>ds', desc = 'Document Symbols' },
-            { '<leader>ws', desc = 'Workspace Symbols' },
-            { '<leader>rn', desc = 'Rename Symbol' },
-            { '<leader>D', desc = 'Type Definition' },
-
-            -- Goto mappings
-            { 'gd', desc = 'Definition' },
-            { 'gr', desc = 'References' },
-            { 'gI', desc = 'Implementation' },
-            { 'gD', desc = 'Declaration' },
-          }
-
-          map('gd', require('telescope.builtin').lsp_definitions, 'Goto [D]efinition')
-          map('gr', require('telescope.builtin').lsp_references, 'Goto [R]eferences')
-          map('gI', require('telescope.builtin').lsp_implementations, 'Goto [I]mplementation')
-          --[[ map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition') ]]
-          --[[ map('<leader>ds', require('telescope.builtin').lsp_document_symbols, 'Document [S]ymbols') ]]
-          --[[ map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Workspace [S]ymbols') ]]
-          map('<leader>rn', vim.lsp.buf.rename, 'Re[n]ame')
-          map('<leader>ca', vim.lsp.buf.code_action, 'Code [A]ction', { 'n', 'v' })
-          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-
-          -- Document highlight configuration
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
-            local highlight_group = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
-
-            -- Highlight references when cursor holds
-            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-              buffer = event.buf,
-              group = highlight_group,
-              callback = vim.lsp.buf.document_highlight,
-            })
-
-            -- Clear highlights when cursor moves
-            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-              buffer = event.buf,
-              group = highlight_group,
-              callback = vim.lsp.buf.clear_references,
-            })
-
-            -- Cleanup on LSP detach
-            vim.api.nvim_create_autocmd('LspDetach', {
-              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
-              callback = function(detach_event)
-                vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = detach_event.buf }
-              end,
-            })
-          end
-
-          -- Toggle inlay hints if supported
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-            map('<leader>ch', function()
-              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-            end, 'Toggle Inlay [H]ints')
-          end
-        end,
-      })
-    end,
-  },
-
-  -- Add Mason tools installer to manage formatters
-  {
-    'WhoIsSethDaniel/mason-tool-installer.nvim',
-    dependencies = { 'williamboman/mason.nvim' },
-    config = function()
-      require('mason-tool-installer').setup {
-        ensure_installed = {
-          'prettier',
-          'eslint_d',
-          'stylua',
-        },
-      }
-    end,
-  },
-
-  -- Formatting configuration
-  {
-    'stevearc/conform.nvim',
-    event = { 'BufWritePre' },
-    cmd = { 'ConformInfo' },
-    keys = {
-      {
-        '<leader>F',
-        function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
-        end,
-        mode = '',
-        desc = 'Format buffer',
-      },
-    },
-    opts = {
-      notify_on_error = false,
-      formatters = {
-        prettier = {
-          prepend_args = {
-            '--tab-width',
-            '2',
-            '--print-width',
-            '100',
-            '--single-quote',
-            '--trailing-comma',
-            'es5',
-          },
-        },
-        stylua = {
-          prepend_args = {
-            '--indent-type',
-            'Spaces',
-            '--indent-width',
-            '2',
-          },
-        },
-      },
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style
-        local disable_filetypes = { c = true, cpp = true }
-        local lsp_format_opt
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          lsp_format_opt = 'never'
-        else
-          lsp_format_opt = 'fallback'
-        end
-        return {
-          timeout_ms = 2500,
-          lsp_format = lsp_format_opt,
-        }
-      end,
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        javascript = { 'prettier', 'eslint_d', stop_after_first = true },
-        typescript = { 'prettier', 'eslint_d', stop_after_first = true },
-        javascriptreact = { 'prettier', 'eslint_d', stop_after_first = true },
-        typescriptreact = { 'prettier', 'eslint_d', stop_after_first = true },
-        svelte = { 'prettier', 'eslint_d', stop_after_first = true },
-        vue = { 'prettier', 'eslint_d', stop_after_first = true },
-        json = { 'prettier' },
-        html = { 'prettier' },
-        markdown = { 'prettier' },
-        css = { 'prettier' },
-        scss = { 'prettier' },
-        -- You can use 'stop_after_first' to run the first available formatter
-        -- python = { "isort", "black", stop_after_first = true },
-      },
-    },
-  },
-
-  -- Autocompletion
-  {
-    'hrsh7th/nvim-cmp',
-    event = 'InsertEnter',
-    dependencies = {
-      -- Snippet Engine & its associated nvim-cmp source
-      {
-        'L3MON4D3/LuaSnip',
-        build = (function()
-          -- Build Step is needed for regex support in snippets
-          -- This step is not supported in many windows environments
-          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
-            return
-          end
-          return 'make install_jsregexp'
-        end)(),
-      },
-      'saadparwaiz1/cmp_luasnip',
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-path',
-    },
-    config = function()
-      local cmp = require 'cmp'
-      local luasnip = require 'luasnip'
-      luasnip.config.setup {}
-
-      cmp.setup {
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
+      require('mason-lspconfig').setup {
+        automatic_installation = true,
+        handlers = {
+          function(server)
+            require('lspconfig')[server].setup {
+              capabilities = capabilities,
+              on_attach = on_attach,
+            }
           end,
         },
-        completion = { completeopt = 'menu,menuone,noinsert' },
+      }
 
-        mapping = cmp.mapping.preset.insert {
-          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-u>'] = cmp.mapping.scroll_docs(4),
-          ['<Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif luasnip.expand_or_locally_jumpable() then
-              luasnip.expand_or_jump()
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-          ['<S-Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            elseif luasnip.locally_jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-          ['<CR>'] = cmp.mapping.confirm { select = true },
-          ['<C-Space>'] = cmp.mapping.complete {},
+      -- Change diagnostic symbols in the sign column
+      local signs = { Error = ' ', Warn = ' ', Hint = '󰠠 ', Info = ' ' }
+      for type, icon in pairs(signs) do
+        local hl = 'DiagnosticSign' .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = '' })
+      end
 
-          -- Advanced snippet navigation
-          ['<C-l>'] = cmp.mapping(function()
-            if luasnip.expand_or_locally_jumpable() then
-              luasnip.expand_or_jump()
-            end
-          end, { 'i', 's' }),
-          ['<C-h>'] = cmp.mapping(function()
-            if luasnip.locally_jumpable(-1) then
-              luasnip.jump(-1)
-            end
-          end, { 'i', 's' }),
-        },
-        sources = {
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-          { name = 'path' },
+      -- Configure diagnostics display
+      vim.diagnostic.config {
+        virtual_text = true,
+        signs = true,
+        update_in_insert = false,
+        underline = true,
+        severity_sort = true,
+        float = {
+          border = 'rounded',
+          source = 'always',
         },
       }
     end,
