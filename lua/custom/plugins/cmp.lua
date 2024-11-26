@@ -68,9 +68,11 @@ return {
         formatting = {
           fields = { 'kind', 'abbr', 'menu' },
           expandable_indicator = true,
-          format = function(_, vim_item)
+          format = function(entry, vim_item)
             -- Kind icons
             vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
+            -- Show source
+            vim_item.menu = string.format('[%s]', entry.source.name)
             return vim_item
           end,
         },
@@ -110,13 +112,12 @@ return {
             end
           end, { 'i', 's' }),
         },
-        sources = cmp.config.sources({
-          { name = 'nvim_lsp' },
+        sources = cmp.config.sources {
           { name = 'luasnip' },
           { name = 'path' },
-        }, {
-          { name = 'buffer' },
-        }),
+          { name = 'nvim_lsp', keyword_length = 4 },
+          { name = 'buffer', keyword_length = 4 },
+        },
       }
     end,
   },
