@@ -14,6 +14,18 @@ return {
       },
     },
     opts = {
+      formatters = {
+        prettier = {
+          command = function()
+            local prettier_path = vim.fn.getcwd() .. '/node_modules/.bin/prettier'
+            if vim.fn.executable(prettier_path) == 1 then
+              -- Wrap the path in quotes if it contains spaces
+              return vim.fn.has 'win32' == 1 and ('"' .. prettier_path .. '.cmd"') or prettier_path
+            end
+            return 'prettier'
+          end,
+        },
+      },
       formatters_by_ft = {
         javascript = { 'prettierd', 'prettier' },
         typescript = { 'prettierd', 'prettier' },
@@ -24,7 +36,6 @@ return {
         yaml = { 'prettierd', 'prettier' },
         markdown = { 'prettierd', 'prettier' },
         lua = { 'stylua' },
-        python = { 'black' },
       },
       -- Add this to configure formatter fallback behavior
       format_on_save = {
