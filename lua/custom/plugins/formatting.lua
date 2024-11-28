@@ -15,6 +15,23 @@ return {
     },
     opts = {
       formatters = {
+        prettierd = {
+          -- Prettierd configuration
+          args = {
+            '--arrow-parens=avoid',
+            '--print-width=100',
+            '--tab-width=2',
+            '--use-tabs=false',
+            '--semi=true',
+            '--single-quote=true',
+            '--trailing-comma=es5',
+            '--bracket-spacing=true',
+            '--bracket-same-line=false',
+            '--prose-wrap=preserve',
+            '--stdin-filepath',
+            '$FILENAME',
+          },
+        },
         prettier = {
           command = function()
             local prettier_path = vim.fn.getcwd() .. '/node_modules/.bin/prettier'
@@ -24,6 +41,29 @@ return {
             end
             return 'prettier'
           end,
+          -- Default Prettier configuration
+          args = {
+            '--print-width',
+            '100',
+            '--tab-width',
+            '2',
+            '--use-tabs',
+            'false',
+            '--semi',
+            'true',
+            '--single-quote',
+            'true',
+            '--trailing-comma',
+            'es5',
+            '--bracket-spacing',
+            'true',
+            '--bracket-same-line',
+            'false',
+            '--prose-wrap',
+            'preserve',
+            '--stdin-filepath',
+            '$FILENAME',
+          },
         },
       },
       formatters_by_ft = {
