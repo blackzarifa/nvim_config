@@ -83,6 +83,7 @@ return {
           }
         end,
       }
+
       -- Change diagnostic symbols in the sign column
       local signs = { Error = ' ', Warn = ' ', Hint = '󰠠 ', Info = ' ' }
       for type, icon in pairs(signs) do
