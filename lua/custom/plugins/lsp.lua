@@ -63,7 +63,7 @@ return {
         automatic_installation = true,
         handlers = {
           function(server)
-            if server ~= 'eslint' then
+            if server ~= 'eslintd' then
               require('lspconfig')[server].setup {
                 capabilities = capabilities,
                 on_attach = on_attach,
@@ -73,7 +73,7 @@ return {
         },
       }
 
-      require('lspconfig').eslint.setup {
+      require('lspconfig').eslintd.setup {
         capabilities = capabilities,
         on_attach = on_attach,
         on_new_config = function(config, new_root_dir)
@@ -83,7 +83,6 @@ return {
           }
         end,
       }
-
       -- Change diagnostic symbols in the sign column
       local signs = { Error = ' ', Warn = ' ', Hint = '󰠠 ', Info = ' ' }
       for type, icon in pairs(signs) do

@@ -7,7 +7,7 @@ return {
     opts = {
       ensure_installed = {
         'stylua',
-        'prettier',
+        'eslint_d',
         'prettierd',
       },
       ui = {
