@@ -20,12 +20,15 @@ return {
       'pablo',
       'peachpuff',
       'quiet',
+      'randomhue',
       'retrobox',
       'ron',
       'shine',
       'slate',
+      'sorbet',
       'torte',
       'wildcharm',
+      'zaibatsu',
       'zellner',
     }
     -- Filter out default themes
