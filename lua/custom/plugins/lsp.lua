@@ -58,6 +58,23 @@ return {
 
       -- Configure LSP servers
       local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+      local lspconfig = require 'lspconfig'
+
+      lspconfig.ts_ls.setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        init_options = {
+          plugins = {
+            {
+              name = '@vue/typescript-plugin',
+              location = vim.fn.expand '$APPDATA/pnpm/global/5/node_modules/@vue/typescript-plugin',
+              languages = { 'vue' },
+            },
+          },
+        },
+        filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+      }
+      lspconfig.volar.setup {}
 
       require('mason-lspconfig').setup {
         automatic_installation = true,
