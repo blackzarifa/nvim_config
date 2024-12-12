@@ -60,14 +60,12 @@ return {
       local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
       local lspconfig = require 'lspconfig'
 
-      lspconfig.ts_ls.setup {
-        on_attach = on_attach,
-        capabilities = capabilities,
+      lspconfig['ts_ls'].setup {
         init_options = {
           plugins = {
             {
               name = '@vue/typescript-plugin',
-              location = vim.fn.expand '$APPDATA/pnpm/global/5/node_modules/@vue/typescript-plugin',
+              location = vim.fn.expand '$LOCALAPPDATA/pnpm/global/5/node_modules/@vue/typescript-plugin',
               languages = { 'vue' },
             },
           },
@@ -80,7 +78,7 @@ return {
         automatic_installation = true,
         handlers = {
           function(server)
-            require('lspconfig')[server].setup {
+            lspconfig[server].setup {
               capabilities = capabilities,
               on_attach = on_attach,
             }
