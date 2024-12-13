@@ -18,20 +18,14 @@ return {
           vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
         end
 
-        --  This is where a variable was first declared, or where a function is defined.
         map('gd', require('telescope.builtin').lsp_definitions, 'Goto Definition')
-
-        -- Find references for the word under your cursor.
         map('gr', require('telescope.builtin').lsp_references, 'Goto References')
-
-        --  Useful when your language has ways of declaring types without an actual implementation.
         map('gI', require('telescope.builtin').lsp_implementations, 'Goto Implementation')
 
         --  Useful when you're on a variable and want to see what type it is.
         map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type Definition')
 
         -- Opens a popup that displays documentation about the word under your cursor
-        --  Useful when you want to see what a function does without jumping to its definition.
         map('K', vim.lsp.buf.hover, 'Hover Documentation')
 
         -- Execute a code action, usually your cursor needs to be on top of an error
@@ -39,7 +33,6 @@ return {
         map('<leader>ca', vim.lsp.buf.code_action, 'Code Action')
 
         -- Rename the variable under your cursor
-        --  Useful for refactoring code.
         map('<leader>rn', vim.lsp.buf.rename, 'Rename')
 
         map('<leader>d', vim.diagnostic.open_float, 'Show Diagnostics')
@@ -60,20 +53,6 @@ return {
       local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
       local lspconfig = require 'lspconfig'
 
-      lspconfig['ts_ls'].setup {
-        init_options = {
-          plugins = {
-            {
-              name = '@vue/typescript-plugin',
-              location = vim.fn.expand '$LOCALAPPDATA/pnpm/global/5/node_modules/@vue/typescript-plugin',
-              languages = { 'vue' },
-            },
-          },
-        },
-        filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
-      }
-      lspconfig.volar.setup {}
-
       require('mason-lspconfig').setup {
         automatic_installation = true,
         handlers = {
@@ -84,6 +63,33 @@ return {
             }
           end,
         },
+      }
+
+      local mason_registry = require 'mason-registry'
+      local vue_language_server_path = mason_registry.get_package('vue-language-server'):get_install_path() .. '/node_modules/@vue/language-server'
+
+      lspconfig['ts_ls'].setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        init_options = {
+          plugins = {
+            {
+              name = '@vue/typescript-plugin',
+              location = vue_language_server_path,
+              languages = { 'javascript', 'typescript', 'vue' },
+            },
+          },
+        },
+        filetypes = {
+          'javascript',
+          'typescript',
+          'vue',
+        },
+      }
+
+      lspconfig['volar'].setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
       }
 
       -- Change diagnostic symbols in the sign column
