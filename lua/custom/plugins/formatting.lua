@@ -43,7 +43,7 @@ return {
         markdown = { 'prettierd' },
         lua = { 'stylua' },
       },
-      format_on_save = { timeout_ms = 500, lsp_fallback = true },
+      format_on_save = { timeout_ms = 1000, lsp_fallback = true },
       parallel_workers = 1,
       stop_after_first = true,
     },
