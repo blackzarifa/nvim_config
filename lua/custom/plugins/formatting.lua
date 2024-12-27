@@ -31,6 +31,10 @@ return {
             '$FILENAME',
           },
         },
+        black = {
+          command = 'black',
+          args = { '--fast', '-' },
+        },
       },
       formatters_by_ft = {
         javascript = { 'prettierd' },
@@ -42,6 +46,7 @@ return {
         yaml = { 'prettierd' },
         markdown = { 'prettierd' },
         lua = { 'stylua' },
+        python = { 'black' },
       },
       format_on_save = { timeout_ms = 2000, lsp_fallback = true },
       parallel_workers = 1,
