@@ -12,7 +12,7 @@ return {
           repl_open_cmd = 'belowright split',
         },
         require('which-key').add {
-          { '<leader>r', group = 'I[R]on' },
+          { '<leader>r', group = 'REPL' },
         },
         keymaps = {
           send_motion = '<leader>rp', -- Send selected block to REPL (visual mode)
