@@ -32,7 +32,6 @@ return {
           },
         },
         black = {
-          command = 'black',
           args = { '--fast', '-' },
         },
       },
