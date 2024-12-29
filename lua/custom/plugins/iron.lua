@@ -1,28 +1,32 @@
 return {
-  {
-    'hkupty/iron.nvim',
-    config = function()
-      require('iron.core').setup {
-        config = {
-          repl_definition = {
-            python = {
-              command = { 'jupyter', 'console', '--kernel', 'python3' },
-            },
+  'hkupty/iron.nvim',
+  config = function()
+    local iron = require 'iron.core'
+
+    iron.setup {
+      config = {
+        repl_definition = {
+          python = {
+            command = { 'jupyter', 'console', '--kernel', 'python3' },
           },
-          repl_open_cmd = 'belowright split',
         },
-        require('which-key').add {
-          { '<leader>r', group = 'REPL' },
-        },
-        keymaps = {
-          send_motion = '<leader>rp', -- Send selected block to REPL (visual mode)
-          send_line = '<leader>rl', -- Send current line to REPL
-          send_file = '<leader>rf', -- Send the entire file to REPL
-          exit = '<leader>rq', -- Exit the REPL
-          interrupt = '<leader>ri', -- Interrupt current REPL execution
-          clear = '<leader>rc', -- Clear REPL output
-        },
-      }
-    end,
-  },
+        repl_open_cmd = 'belowright split',
+      },
+    }
+
+    require('which-key').add {
+      { '<leader>r', group = 'REPL' },
+    }
+
+    local map = vim.keymap.set
+    map('n', '<leader>rs', iron.repl_for, { desc = 'Open REPL' })
+    map('n', '<leader>rr', iron.send, { desc = 'Send to REPL' })
+    map('v', '<leader>rr', iron.send, { desc = 'Send to REPL' })
+    map('n', '<leader>rq', iron.close_repl, { desc = 'Close REPL' })
+    map('n', '<leader>rl', iron.send_line, { desc = 'Send Line' })
+    map('n', '<leader>rf', iron.send_file, { desc = 'Send File' })
+    map('n', '<leader>rc', iron.send_until_cursor, { desc = 'Send Until Cursor' })
+    map('n', '<leader>rm', iron.mark_motion, { desc = 'Mark Motion' })
+    map('v', '<leader>rm', iron.mark_visual, { desc = 'Mark Visual' })
+  end,
 }
