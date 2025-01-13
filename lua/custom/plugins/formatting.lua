@@ -16,6 +16,7 @@ return {
     opts = {
       formatters = {
         prettierd = {
+          prepend_args = { '--config-precedence', 'prefer-file' },
           args = {
             '--arrow-parens=avoid',
             '--print-width=100',
