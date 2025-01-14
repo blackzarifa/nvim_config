@@ -16,8 +16,8 @@ return {
     opts = {
       formatters = {
         prettierd = {
-          prepend_args = { '--config-precedence', 'prefer-file' },
           args = {
+            '--config-precedence=prefer-file',
             '--arrow-parens=avoid',
             '--print-width=100',
             '--tab-width=2',
@@ -28,7 +28,6 @@ return {
             '--bracket-spacing=true',
             '--bracket-same-line=false',
             '--prose-wrap=preserve',
-            '--stdin-filepath',
             '$FILENAME',
           },
         },
