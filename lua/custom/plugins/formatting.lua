@@ -38,6 +38,7 @@ return {
       formatters_by_ft = {
         javascript = { 'prettierd' },
         typescript = { 'prettierd' },
+        typescriptreact = { 'prettierd' },
         vue = { 'prettierd' },
         css = { 'prettierd' },
         html = { 'prettierd' },
