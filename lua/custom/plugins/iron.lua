@@ -21,7 +21,6 @@ return {
     local map = vim.keymap.set
     map('n', '<leader>rs', iron.repl_for, { desc = 'Open REPL' })
     map('n', '<leader>rr', iron.send, { desc = 'Send to REPL' })
-    map('v', '<leader>rr', iron.send, { desc = 'Send to REPL' })
     map('n', '<leader>rq', iron.close_repl, { desc = 'Close REPL' })
     map('n', '<leader>rl', iron.send_line, { desc = 'Send Line' })
     map('n', '<leader>rf', iron.send_file, { desc = 'Send File' })
