@@ -20,7 +20,14 @@ return {
     }
 
     local map = vim.keymap.set
-    map('n', '<leader>rs', iron.repl_for, { desc = 'Open REPL' })
+    -- map('n', '<leader>rs', iron.repl_for, { desc = 'Open REPL' })
+    map('n', '<leader>rs', function()
+      require('iron.core').repl_for 'python'
+    end, { desc = 'Open Python REPL' })
+    map('n', '<leader>rb', function()
+      require('iron.core').send(nil, vim.api.nvim_buf_get_lines(0, 0, -1, false))
+    end, { desc = 'Send Buffer' })
+
     map('n', '<leader>rr', iron.send, { desc = 'Send to REPL' })
     map('n', '<leader>rq', iron.close_repl, { desc = 'Close REPL' })
     map('n', '<leader>rl', iron.send_line, { desc = 'Send Line' })
