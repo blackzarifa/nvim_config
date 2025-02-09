@@ -32,7 +32,11 @@ return {
           },
         },
         black = {
-          args = { '--fast', '-' },
+          args = {
+            '--fast',
+            '--skip-string-normalization',
+            '-',
+          },
         },
       },
       formatters_by_ft = {
