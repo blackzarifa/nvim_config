@@ -151,6 +151,18 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- Cleanup shada
+vim.api.nvim_create_autocmd({ 'VimEnter', 'VimLeave' }, {
+  callback = function()
+    -- Delete temporary ShaDa files on both startup and exit
+    local shada_pattern = vim.fn.stdpath 'data' .. '/shada/main.shada.tmp.*'
+    local files = vim.fn.glob(shada_pattern, true, true)
+    for _, file in ipairs(files) do
+      vim.fn.delete(file)
+    end
+  end,
+})
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
