@@ -9,6 +9,7 @@ return {
         'stylua',
         'eslint_d',
         'prettierd',
+        'gopls',
       },
       ui = {
         icons = {
