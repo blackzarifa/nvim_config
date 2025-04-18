@@ -63,7 +63,7 @@ return {
           end,
         },
         completion = {
-          completeopt = 'menu,menuone,noinsert',
+          completeopt = 'menu,menuone,noselect',
         },
         formatting = {
           fields = { 'kind', 'abbr', 'menu' },
