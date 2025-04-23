@@ -42,6 +42,12 @@ return {
           args = { '-s' },
         },
         goimports = {},
+        golines = {
+          args = {
+            '--max-len=80',
+            '--base-formatter=gofmt',
+          },
+        },
       },
       formatters_by_ft = {
         javascript = { 'prettierd' },
@@ -55,7 +61,7 @@ return {
         markdown = { 'prettierd' },
         lua = { 'stylua' },
         python = { 'black' },
-        go = { 'goimports', 'gofmt' },
+        go = { 'golines', 'goimports', 'gofmt' },
       },
       format_on_save = { timeout_ms = 2000, lsp_fallback = true },
       parallel_workers = 1,
