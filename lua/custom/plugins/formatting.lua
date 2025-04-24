@@ -31,6 +31,11 @@ return {
             '$FILENAME',
           },
         },
+        eslint_d = {
+          command = 'eslint_d',
+          args = { '--fix-to-stdout', '--stdin', '--stdin-filename', '$FILENAME' },
+          stdin = true,
+        },
         black = {
           args = {
             '--fast',
@@ -50,10 +55,9 @@ return {
         },
       },
       formatters_by_ft = {
-        javascript = { 'prettierd' },
-        typescript = { 'prettierd' },
-        typescriptreact = { 'prettierd' },
-        vue = { 'prettierd' },
+        javascript = { 'eslint_d', 'prettierd' },
+        typescript = { 'eslint_d', 'prettierd' },
+        vue = { 'eslint_d', 'prettierd' },
         css = { 'prettierd' },
         html = { 'prettierd' },
         json = { 'prettierd' },
@@ -65,7 +69,7 @@ return {
       },
       format_on_save = { timeout_ms = 2000, lsp_fallback = true },
       parallel_workers = 1,
-      stop_after_first = true,
+      stop_after_first = false,
     },
   },
 }
