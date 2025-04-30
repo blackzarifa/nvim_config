@@ -67,9 +67,12 @@ return {
         python = { 'black' },
         go = { 'golines', 'goimports', 'gofmt' },
       },
-      format_on_save = { timeout_ms = 3000, lsp_fallback = true, async = true },
-      parallel_workers = 1,
-      stop_after_first = false,
+      format_on_save = {
+        timeout_ms = 2500,
+        lsp_fallback = true,
+      },
+      parallel_workers = 4,
+      stop_after_first = true,
     },
   },
 }
