@@ -32,8 +32,12 @@ return {
           },
         },
         eslint_d = {
-          command = 'eslint_d',
-          args = { '--fix-to-stdout', '--stdin', '--stdin-filename', '$FILENAME' },
+          args = {
+            '--fix-to-stdout',
+            '--stdin',
+            '--stdin-filename',
+            '$FILENAME',
+          },
           stdin = true,
         },
         black = {
@@ -55,9 +59,9 @@ return {
         },
       },
       formatters_by_ft = {
-        javascript = { 'eslint_d', 'prettierd' },
-        typescript = { 'eslint_d', 'prettierd' },
-        vue = { 'eslint_d', 'prettierd' },
+        javascript = { 'prettierd', 'eslint_d' },
+        typescript = { 'prettierd', 'eslint_d' },
+        vue = { 'prettierd', 'eslint_d' },
         css = { 'prettierd' },
         html = { 'prettierd' },
         json = { 'prettierd' },
@@ -68,11 +72,18 @@ return {
         go = { 'golines', 'goimports', 'gofmt' },
       },
       format_on_save = {
-        timeout_ms = 2500,
+        timeout_ms = 2000,
         lsp_fallback = true,
       },
+      stop_after_first = false,
       parallel_workers = 4,
-      stop_after_first = true,
     },
+    config = function(_, opts)
+      vim.defer_fn(function()
+        vim.fn.system 'eslint_d status || eslint_d start'
+      end, 100)
+
+      require('conform').setup(opts)
+    end,
   },
 }
