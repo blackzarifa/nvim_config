@@ -12,6 +12,15 @@ return {
         mode = '',
         desc = 'Format buffer',
       },
+      {
+        '<leader>Fe',
+        function()
+          -- Run eslint_d manually when needed, not on every save
+          require('conform').format { async = true, formatters = { 'eslint_d' } }
+        end,
+        mode = 'n',
+        desc = 'Format with eslint_d',
+      },
     },
     opts = {
       formatters = {
@@ -59,9 +68,10 @@ return {
         },
       },
       formatters_by_ft = {
-        javascript = { 'prettierd', 'eslint_d' },
-        typescript = { 'prettierd', 'eslint_d' },
-        vue = { 'prettierd', 'eslint_d' },
+        -- Remove eslint_d completely from auto-formatting
+        javascript = { 'prettierd' },
+        typescript = { 'prettierd' },
+        vue = { 'prettierd' },
         css = { 'prettierd' },
         html = { 'prettierd' },
         json = { 'prettierd' },
@@ -71,17 +81,26 @@ return {
         python = { 'black' },
         go = { 'golines', 'goimports', 'gofmt' },
       },
-      format_on_save = {
-        timeout_ms = 2000,
-        lsp_fallback = true,
-      },
-      stop_after_first = false,
-      parallel_workers = 4,
+      format_on_save = function(bufnr)
+        -- Only format certain files on save
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
+        -- Skip formatting on node_modules files
+        if bufname:match 'node_modules' then
+          return
+        end
+
+        -- Skip eslint_d automatic running completely
+        return {
+          timeout_ms = 500, -- Very short timeout - if it takes longer, skip it
+          lsp_fallback = true,
+        }
+      end,
     },
     config = function(_, opts)
-      vim.defer_fn(function()
-        vim.fn.system 'eslint_d status || eslint_d start'
-      end, 100)
+      -- Only keep this to support manual eslint_d formatting, don't start on load
+      vim.api.nvim_create_user_command('EslintFix', function()
+        require('conform').format { formatters = { 'eslint_d' } }
+      end, { desc = 'Fix current file with eslint_d' })
 
       require('conform').setup(opts)
     end,
