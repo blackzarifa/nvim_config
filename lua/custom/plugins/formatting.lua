@@ -33,7 +33,7 @@ return {
             '--use-tabs=false',
             '--semi=true',
             '--single-quote=true',
-            '--trailing-comma=es5',
+            '--trailing-comma=all',
             '--bracket-spacing=true',
             '--bracket-same-line=false',
             '--prose-wrap=preserve',
