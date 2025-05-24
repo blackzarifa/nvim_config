@@ -1,5 +1,4 @@
 return {
-  -- LSP Configuration & Plugins
   {
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -8,11 +7,8 @@ return {
     },
     config = function()
       local on_attach = function(client, bufnr)
-        -- Universal fix: Disable semantic tokens to prevent highlighting conflicts
-        -- This works for ALL frameworks (Vue, React, Svelte, etc.)
         client.server_capabilities.semanticTokensProvider = nil
 
-        -- Keybinds for available LSP actions
         local map = function(keys, func, desc)
           vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
         end
@@ -32,74 +28,45 @@ return {
         end, 'Format')
       end
 
-      -- Configure LSP servers
       local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
       local lspconfig = require 'lspconfig'
 
       require('mason').setup()
 
-      local vue_language_server_path = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server'
-      lspconfig['ts_ls'].setup {
-        capabilities = capabilities,
-        on_attach = on_attach,
-        init_options = {
-          plugins = {
-            {
-              name = '@vue/typescript-plugin',
-              location = vue_language_server_path,
-              languages = { 'javascript', 'typescript', 'vue' },
+      local servers = {
+        ts_ls = {
+          init_options = {
+            plugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server',
+                languages = { 'javascript', 'typescript', 'vue' },
+              },
             },
           },
+          filetypes = {
+            'javascript',
+            'typescript',
+            'vue',
+            'javascript.jsx',
+            'javascriptreact',
+            'typescript.tsx',
+            'typescriptreact',
+          },
         },
-        filetypes = {
-          'javascript',
-          'typescript',
-          'vue',
-          'javascript.jsx',
-          'javascriptreact',
-          'typescript.tsx',
-          'typescriptreact',
-        },
-      }
-
-      lspconfig['volar'].setup {
-        capabilities = capabilities,
-        on_attach = on_attach,
-      }
-
-      lspconfig['svelte'].setup {
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          svelte = {
-            plugin = {
-              html = {
-                completions = {
+        volar = {},
+        svelte = {
+          settings = {
+            svelte = {
+              plugin = {
+                html = { completions = { enable = true, emmet = false } },
+                svelte = { completions = { enable = true } },
+                css = { completions = { enable = true, emmet = true } },
+                typescript = {
                   enable = true,
-                  emmet = false,
-                },
-              },
-              svelte = {
-                completions = {
-                  enable = true,
-                },
-              },
-              css = {
-                completions = {
-                  enable = true,
-                  emmet = true,
-                },
-              },
-              typescript = {
-                enable = true,
-                diagnostics = {
-                  enable = true,
-                },
-                hover = {
-                  enable = true,
-                },
-                completions = {
-                  enable = true,
+                  diagnostics = { enable = true },
+                  hover = { enable = true },
+                  completions = { enable = true },
                 },
               },
             },
@@ -107,14 +74,18 @@ return {
         },
       }
 
-      -- Change diagnostic symbols in the sign column
+      for server, config in pairs(servers) do
+        config.capabilities = capabilities
+        config.on_attach = on_attach
+        lspconfig[server].setup(config)
+      end
+
       local signs = { Error = ' ', Warn = ' ', Hint = '󰠠 ', Info = ' ' }
       for type, icon in pairs(signs) do
         local hl = 'DiagnosticSign' .. type
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = '' })
       end
 
-      -- Configure diagnostics display
       vim.diagnostic.config {
         virtual_text = true,
         signs = true,
