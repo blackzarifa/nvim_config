@@ -36,10 +36,8 @@ return {
       local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
       local lspconfig = require 'lspconfig'
 
-      -- Just set up Mason without any automatic features
       require('mason').setup()
 
-      -- Set up your typescript server with expanded framework support
       local vue_language_server_path = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server'
       lspconfig['ts_ls'].setup {
         capabilities = capabilities,
@@ -61,14 +59,52 @@ return {
           'javascriptreact',
           'typescript.tsx',
           'typescriptreact',
-          'svelte',
         },
       }
 
-      -- Set up Volar for Vue files
       lspconfig['volar'].setup {
         capabilities = capabilities,
         on_attach = on_attach,
+      }
+
+      lspconfig['svelte'].setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = {
+          svelte = {
+            plugin = {
+              html = {
+                completions = {
+                  enable = true,
+                  emmet = false,
+                },
+              },
+              svelte = {
+                completions = {
+                  enable = true,
+                },
+              },
+              css = {
+                completions = {
+                  enable = true,
+                  emmet = true,
+                },
+              },
+              typescript = {
+                enable = true,
+                diagnostics = {
+                  enable = true,
+                },
+                hover = {
+                  enable = true,
+                },
+                completions = {
+                  enable = true,
+                },
+              },
+            },
+          },
+        },
       }
 
       -- Change diagnostic symbols in the sign column
