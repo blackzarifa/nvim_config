@@ -10,6 +10,7 @@ return {
         'eslint_d',
         'prettierd',
         'gopls',
+        'tailwindcss-language-server',
       },
       ui = {
         icons = {
