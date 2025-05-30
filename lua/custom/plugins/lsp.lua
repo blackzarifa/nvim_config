@@ -55,6 +55,34 @@ return {
           },
         },
         volar = {},
+        tailwindcss = {
+          filetypes = {
+            'css',
+            'postcss',
+            'sass',
+            'scss',
+            'javascript',
+            'javascriptreact',
+            'typescript',
+            'typescriptreact',
+            'vue',
+            'svelte',
+          },
+          settings = {
+            tailwindCSS = {
+              includeLanguages = {
+                vue = 'html',
+              },
+              experimental = {
+                classRegex = {
+                  { 'class=["\'`]([^"\'`]*)["\'`]', 1 },
+                  { ':class=["\'`]([^"\'`]*)["\'`]', 1 },
+                  { 'classList\\.\\w+\\(["\'`]([^"\'`]*)["\'`]\\)', 1 },
+                },
+              },
+            },
+          },
+        },
         svelte = {
           settings = {
             svelte = {
