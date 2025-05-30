@@ -91,7 +91,7 @@ return {
 
         -- Skip eslint_d automatic running completely
         return {
-          timeout_ms = 500, -- Very short timeout - if it takes longer, skip it
+          timeout_ms = 1000,
           lsp_fallback = true,
         }
       end,
