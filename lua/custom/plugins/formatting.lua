@@ -71,6 +71,8 @@ return {
         -- Remove eslint_d completely from auto-formatting
         javascript = { 'prettierd' },
         typescript = { 'prettierd' },
+        javascriptreact = { 'prettierd' },
+        typescriptreact = { 'prettierd' },
         vue = { 'prettierd' },
         css = { 'prettierd' },
         html = { 'prettierd' },
