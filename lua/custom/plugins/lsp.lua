@@ -34,6 +34,7 @@ return {
       require('mason').setup()
 
       local servers = {
+        gopls = {},
         ts_ls = {
           init_options = {
             plugins = {

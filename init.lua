@@ -14,6 +14,9 @@ vim.g.maplocalleader = ' '
 
 vim.g.have_nerd_font = true
 
+-- Disable man plugin to prevent ENOENT errors on Windows
+vim.g.loaded_man = 1
+
 vim.cmd [[language en_US.UTF-8]]
 
 -- [[ Setting options ]]
@@ -92,6 +95,11 @@ vim.opt.foldlevelstart = 99
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+
+-- Global K mapping fallback (LSP will override this when available)
+vim.keymap.set('n', 'K', function()
+  print('No documentation available (LSP not attached or not supported)')
+end, { desc = 'Show documentation fallback', silent = true })
 
 vim.keymap.set('n', '<leader>L', '<cmd>Lazy<cr>', { desc = 'Lazy Plugin Manager' })
 
