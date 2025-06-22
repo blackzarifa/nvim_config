@@ -101,6 +101,38 @@ return {
             },
           },
         },
+        intelephense = {
+          settings = {
+            intelephense = {
+              files = {
+                maxSize = 5000000,
+                associations = { '*.php', '*.phtml' },
+                exclude = {
+                  '**/.git/**',
+                  '**/.svn/**',
+                  '**/.hg/**',
+                  '**/CVS/**',
+                  '**/.DS_Store/**',
+                  '**/node_modules/**',
+                  '**/bower_components/**',
+                  '**/vendor/**/{Tests,tests}/**',
+                  '**/.history/**',
+                  '**/vendor/**/vendor/**',
+                },
+              },
+
+              telemetry = {
+                enabled = false,
+              },
+              environment = {
+                includePaths = {
+                  'vendor',
+                },
+              },
+            },
+          },
+        },
+
       }
 
       for server, config in pairs(servers) do

@@ -35,6 +35,11 @@ return {
         'markdown_inline',
         'json',
         'yaml',
+
+        -- PHP & Laravel
+        'php',
+        'phpdoc',
+        'blade',
       },
 
       -- zc to close folds

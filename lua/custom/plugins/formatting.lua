@@ -66,6 +66,30 @@ return {
             '--base-formatter=gofmt',
           },
         },
+        pint = {
+          meta = {
+            url = 'https://laravel.com/docs/pint',
+            description = 'Laravel Pint - Laravel code style fixer',
+          },
+        },
+        ['php-cs-fixer'] = {
+          args = {
+            'fix',
+            '--no-interaction',
+            '--quiet',
+            '--using-cache=no',
+            '$FILENAME',
+          },
+          stdin = false,
+          tmpfile_format = '.php-cs-fixer.php',
+        },
+        ['blade-formatter'] = {
+          args = {
+            '--write',
+            '$FILENAME',
+          },
+          stdin = false,
+        },
       },
       formatters_by_ft = {
         -- Remove eslint_d completely from auto-formatting
@@ -82,6 +106,8 @@ return {
         lua = { 'stylua' },
         python = { 'black' },
         go = { 'golines', 'goimports', 'gofmt' },
+        php = { 'pint', 'php-cs-fixer' },
+        blade = { 'blade-formatter' },
       },
       format_on_save = function(bufnr)
         -- Only format certain files on save

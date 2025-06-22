@@ -11,6 +11,10 @@ return {
         'prettierd',
         'gopls',
         'tailwindcss-language-server',
+        'intelephense',
+        'php-cs-fixer',
+        'pint',
+        'blade-formatter',
       },
       ui = {
         icons = {
