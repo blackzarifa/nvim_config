@@ -98,7 +98,7 @@ vim.opt.foldlevelstart = 99
 
 -- Global K mapping fallback (LSP will override this when available)
 vim.keymap.set('n', 'K', function()
-  print('No documentation available (LSP not attached or not supported)')
+  print 'No documentation available (LSP not attached or not supported)'
 end, { desc = 'Show documentation fallback', silent = true })
 
 vim.keymap.set('n', '<leader>L', '<cmd>Lazy<cr>', { desc = 'Lazy Plugin Manager' })
@@ -383,7 +383,9 @@ require('lazy').setup({
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Find Help' })
       vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = 'Find Keymaps' })
-      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Find Files' })
+      vim.keymap.set('n', '<leader>ff', function()
+        builtin.find_files { hidden = true }
+      end, { desc = 'Find Files' })
       vim.keymap.set('n', '<leader>fs', builtin.builtin, { desc = 'Find Select Telescope' })
       vim.keymap.set('n', '<leader>fw', builtin.grep_string, { desc = 'Find current Word' })
       vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Find by Grep' })
