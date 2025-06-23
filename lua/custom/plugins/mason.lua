@@ -9,6 +9,8 @@ return {
         'stylua',
         'eslint_d',
         'prettierd',
+        'typescript-language-server',
+        'json-lsp',
         'gopls',
         'tailwindcss-language-server',
         'intelephense',
